@@ -1,25 +1,14 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Upload Your Design</title>
-    <style>
-      body {
-        font-family: sans-serif;
-        text-align: center;
-        padding: 40px;
-      }
-      input[type="file"] {
-        margin-top: 20px;
-        font-size: 16px;
-      }
-    </style>
+    <title>Upload Design</title>
   </head>
   <body>
-    <h2>Upload Your Lanyard Design</h2>
+    <h3>Upload your Lanyard Design</h3>
     <input type="file" id="imageInput" accept="image/*" />
 
     <script>
-      const input = document.getElementById('imageInput');
+      const input = document.getElementById("imageInput");
 
       input.onchange = async () => {
         const file = input.files[0];
@@ -27,7 +16,6 @@
 
         reader.onloadend = async () => {
           const base64 = reader.result.split(',')[1];
-
           const formData = new FormData();
           formData.append("image", base64);
 
@@ -39,8 +27,9 @@
           const data = await res.json();
           const imageUrl = data.data.url;
 
+          console.log("✅ Uploaded:", imageUrl);
+          // Send image URL to Wix Studio
           parent.postMessage({ type: "imageUploaded", imageUrl }, "*");
-          console.log("✅ Sent to parent:", imageUrl);
         };
 
         reader.readAsDataURL(file);
