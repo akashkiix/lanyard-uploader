@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Upload Your Design</title>
+    <style>
+      body {
+        font-family: sans-serif;
+        text-align: center;
+        padding: 40px;
+      }
+      input[type="file"] {
+        margin-top: 20px;
+        font-size: 16px;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>Upload Your Lanyard Design</h2>
+    <input type="file" id="imageInput" accept="image/*" />
+
+    <script>
+      const input = document.getElementById('imageInput');
+
+      input.onchange = async () => {
+        const file = input.files[0];
+        const reader = new FileReader();
+
+        reader.onloadend = async () => {
+          const base64 = reader.result.split(',')[1];
+
+          const formData = new FormData();
+          formData.append("image", base64);
+
+          const res = await fetch("https://api.imgbb.com/1/upload?key=ffd80c6acfd7fb50fea9f018e8542ae2", {
+            method: "POST",
+            body: formData
+          });
+
+          const data = await res.json();
+          const imageUrl = data.data.url;
+
+          parent.postMessage({ type: "imageUploaded", imageUrl }, "*");
+          console.log("✅ Sent to parent:", imageUrl);
+        };
+
+        reader.readAsDataURL(file);
+      };
+    </script>
+  </body>
+</html>
